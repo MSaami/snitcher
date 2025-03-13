@@ -12,6 +12,5 @@ class HttpClient
   rescue => e
     Rails.logger.error(e.message)
     false
-
   end
 end

@@ -10,6 +10,6 @@
 
 
 
-["Sport", "Technology", "Business"].each do |category_name|
+["Sport", "Technology", "Business", "Art", "Book", "Culture", "Environment", "Film", "Games", "Politics"].each do |category_name|
   Category.find_or_create_by!(name: category_name)
 end
