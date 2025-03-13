@@ -11,9 +11,7 @@ class CreateNews < ActiveRecord::Migration[8.0]
 
       t.timestamps
 
-      t.index [:provider_id, :source], unique: true
-
+      t.index [ :provider_id, :source ], unique: true
     end
-
   end
 end

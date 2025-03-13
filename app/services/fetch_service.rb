@@ -1,14 +1,16 @@
 class FetchService
   def fetch_all
-    Category.all().pluck(:id).each do |category_id|
-      fetchGuardian(category_id)
-      fetchNewsApi(category_id)
-      fetchNyt(category_id)
+    Category.all.pluck(:id).each do |category_id|
+      fetch_news_for_category(category_id)
     end
-
   end
 
-  private
+  def fetch_news_for_category(category_id)
+    fetchGuardian(category_id)
+    fetchNewsApi(category_id)
+    fetch_nyt(category_id)
+  end
+
 
   def fetchGuardian(category_id)
     category = Category.find(category_id)
@@ -63,10 +65,9 @@ class FetchService
     News.upsert_all(news_batch, unique_by: [ :provider_id, :source ]) if news_batch.any?
   end
 
-
-  def fetchNyt(category_id)
+  def fetch_nyt(category_id)
     category = Category.find(category_id)
-    category_name=  CategoryMapper.map(:nyt, category.name.to_sym)
+    category_name = CategoryMapper.map(:nyt, category.name.to_sym)
     url = "https://api.nytimes.com/svc/search/v2/articlesearch.json?&api-key=qvkdA0vbQm1ts4TKgm2GcUDiVuZnNlXG&page=1&fq=pub_date:[2025-02-27T12:07:29%20TO%20*]%20AND%20section_name:(\"#{category_name}\")"
     service = HttpClient.new(url)
     response = service.get
@@ -87,6 +88,6 @@ class FetchService
         provider_id: provider_id
       }
     end
-    News.upsert_all(news_batch, unique_by: [ :provider_id, :source ]) if news_batch.any?
+    News.upsert_all(news_batch, unique_by: [:provider_id, :source]) if news_batch.any?
   end
 end
